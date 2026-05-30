@@ -1,4 +1,5 @@
 import Signal from "../models/Signal.js";
+import { updateSignalStatus } from "../services/signalService.js";
 
 export const createSignal = async (req, res) => {
     try {
@@ -22,10 +23,16 @@ export const getSignals = async (req, res) => {
             createdAt: -1,
         });
 
+        const updatedSignals = await Promise.all(
+            signals.map((signal) =>
+                updateSignalStatus(signal)
+            )
+        );
+
         res.status(200).json({
             success: true,
-            count: signals.length,
-            data: signals,
+            count: updatedSignals.length,
+            data: updatedSignals,
         });
     } catch (error) {
         res.status(500).json({
@@ -46,9 +53,12 @@ export const getSignalById = async (req, res) => {
             });
         }
 
+        const updatedSignal =
+            await updateSignalStatus(signal);
+
         res.status(200).json({
             success: true,
-            data: signal,
+            data: updatedSignal,
         });
     } catch (error) {
         res.status(500).json({
