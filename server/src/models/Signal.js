@@ -62,20 +62,45 @@ const signalSchema = new mongoose.Schema(
 );
 
 signalSchema.pre("validate", function () {
-    if (this.expiryTime <= this.entryTime) {
+    const now = new Date();
+
+    const twentyFourHoursAgo = new Date(
+        now.getTime() -
+        24 * 60 * 60 * 1000
+    );
+
+    if (
+        this.entryTime <
+        twentyFourHoursAgo
+    ) {
+        throw new Error(
+            "Entry time cannot be older than 24 hours"
+        );
+    }
+
+    if (
+        this.expiryTime <=
+        this.entryTime
+    ) {
         throw new Error(
             "expiryTime must be greater than entryTime"
         );
     }
 
     if (this.direction === "BUY") {
-        if (this.stopLoss >= this.entryPrice) {
+        if (
+            this.stopLoss >=
+            this.entryPrice
+        ) {
             throw new Error(
                 "BUY: stopLoss must be less than entryPrice"
             );
         }
 
-        if (this.targetPrice <= this.entryPrice) {
+        if (
+            this.targetPrice <=
+            this.entryPrice
+        ) {
             throw new Error(
                 "BUY: targetPrice must be greater than entryPrice"
             );
@@ -83,13 +108,19 @@ signalSchema.pre("validate", function () {
     }
 
     if (this.direction === "SELL") {
-        if (this.stopLoss <= this.entryPrice) {
+        if (
+            this.stopLoss <=
+            this.entryPrice
+        ) {
             throw new Error(
                 "SELL: stopLoss must be greater than entryPrice"
             );
         }
 
-        if (this.targetPrice >= this.entryPrice) {
+        if (
+            this.targetPrice >=
+            this.entryPrice
+        ) {
             throw new Error(
                 "SELL: targetPrice must be less than entryPrice"
             );

@@ -29,16 +29,19 @@ export const calculateROI = (
 export const updateSignalStatus = async (
     signal
 ) => {
+    const currentPrice =
+        await getCurrentPrice(signal.symbol);
+
     if (
         CLOSED_STATUSES.includes(
             signal.status
         )
     ) {
-        return signal;
+        return {
+            ...signal.toObject(),
+            currentPrice,
+        };
     }
-
-    const currentPrice =
-        await getCurrentPrice(signal.symbol);
 
     signal.realizedROI = calculateROI(
         signal.direction,
@@ -76,5 +79,8 @@ export const updateSignalStatus = async (
 
     await signal.save();
 
-    return signal;
+    return {
+        ...signal.toObject(),
+        currentPrice,
+    };
 };

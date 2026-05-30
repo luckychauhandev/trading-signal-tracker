@@ -1,11 +1,11 @@
-import React from 'react'
+import Home from "./pages/Home";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <h1>hello</h1>
+    <div className="min-h-screen bg-slate-100">
+      <Home />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -42,9 +42,14 @@ export const getSignals = async (req, res) => {
     }
 };
 
-export const getSignalById = async (req, res) => {
+export const getSignalById = async (
+    req,
+    res
+) => {
     try {
-        const signal = await Signal.findById(req.params.id);
+        const signal = await Signal.findById(
+            req.params.id
+        );
 
         if (!signal) {
             return res.status(404).json({
